@@ -1,6 +1,6 @@
 {
   "name": "zenode-transcript",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "ZenodeBots web transcript service — renders Discord ticket transcripts as signed, self-contained HTML pages.",
   "type": "module",
   "private": true,

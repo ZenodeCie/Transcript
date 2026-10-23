@@ -161,6 +161,33 @@ export class TranscriptStore {
     }
   }
 
+  findByChannelId(channelId: string): TranscriptMeta | null {
+    const now = Date.now()
+    let best: TranscriptMeta | null = null
+    for (const meta of this.index.values()) {
+      if (meta.channelId !== channelId) continue
+      if (meta.expiresAt <= now) continue
+      if (!best || meta.createdAt > best.createdAt) {
+        best = meta
+      }
+    }
+    return best
+  }
+
+  findLatestByGuildAndChannel(guildId: string, channelId: string): TranscriptMeta | null {
+    const now = Date.now()
+    let best: TranscriptMeta | null = null
+    for (const meta of this.index.values()) {
+      if (meta.guildId !== guildId) continue
+      if (meta.channelId !== channelId) continue
+      if (meta.expiresAt <= now) continue
+      if (!best || meta.createdAt > best.createdAt) {
+        best = meta
+      }
+    }
+    return best
+  }
+
   list(limit = 20, offset = 0): { items: TranscriptMeta[]; total: number } {
     const now = Date.now()
     const items = Array.from(this.index.values())

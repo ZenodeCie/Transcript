@@ -81,6 +81,24 @@ export class TranscriptServer {
         return
       }
 
+      const botRoute = pathname.match(/^\/bot0000\/(\d{17,20})\/(\d{17,20})\.html$/)
+      if (method === "GET" && botRoute) {
+        const guildId = botRoute[1]
+        const channelId = botRoute[2]
+        const meta = this.store.findLatestByGuildAndChannel(guildId, channelId)
+        if (!meta) {
+          sendError(res, 404, "not_found", "Transcript introuvable pour ce salon")
+          return
+        }
+        const exp = Math.floor(meta.expiresAt / 1000)
+        const { signLink, buildSignedUrl } = await import("../storage/signedLink.js")
+        const sig = signLink(this.env.signingSecret, meta.id, exp)
+        const url = buildSignedUrl(this.env.publicUrl, meta.id, exp, sig)
+        res.writeHead(302, { Location: url, "Cache-Control": "no-store" })
+        res.end()
+        return
+      }
+
       if (method === "GET" && pathname.startsWith("/t/")) {
         const id = pathname.split("/")[2]
         const exp = Number(parsed.searchParams.get("exp"))

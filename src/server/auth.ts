@@ -1,9 +1,8 @@
-import { timingSafeEqual } from "node:crypto"
+import { createHash, timingSafeEqual } from "node:crypto"
 import type { IncomingMessage } from "node:http"
 import type { TranscriptEnv } from "../env.js"
 
 function digest(value: string): Buffer {
-  const { createHash } = require("node:crypto")
   return createHash("sha256").update(value).digest()
 }
 

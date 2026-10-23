@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.log
+.env
+config.env
+data/
+*.temp.*
+*.md
+!README.md
+!README_en.md
+!CONTRIBUTING.md

@@ -5,7 +5,16 @@ import type { Logger } from "../logger.js"
 import { TranscriptStore } from "../storage/store.js"
 import { isAuthorized, clientKey } from "./auth.js"
 import { TokenBucket } from "./rateLimit.js"
-import { parseRequest, readJson, sendJson, sendText, sendError, jsonErrorToStatus, getParam } from "./http.js"
+import {
+  parseRequest,
+  readJson,
+  sendJson,
+  sendText,
+  sendError,
+  jsonErrorToStatus,
+  getParam,
+  resolvePublicBase,
+} from "./http.js"
 import { verifyLink } from "../storage/signedLink.js"
 import { renderTranscript } from "../render/index.js"
 import { DiscordFetcher } from "../discord/fetcher.js"
@@ -93,7 +102,8 @@ export class TranscriptServer {
         const exp = Math.floor(meta.expiresAt / 1000)
         const { signLink, buildSignedUrl } = await import("../storage/signedLink.js")
         const sig = signLink(this.env.signingSecret, meta.id, exp)
-        const url = buildSignedUrl(this.env.publicUrl, meta.id, exp, sig)
+        const base = resolvePublicBase(req, this.env)
+        const url = buildSignedUrl(base, meta.id, exp, sig)
         res.writeHead(302, { Location: url, "Cache-Control": "no-store" })
         res.end()
         return
@@ -234,7 +244,12 @@ export class TranscriptServer {
         const id = newTranscriptId()
         const exp = Math.floor((now + ttlMs) / 1000)
         const sig = (await import("../storage/signedLink.js")).signLink(this.env.signingSecret, id, exp)
-        const url = (await import("../storage/signedLink.js")).buildSignedUrl(this.env.publicUrl, id, exp, sig)
+        const url = (await import("../storage/signedLink.js")).buildSignedUrl(
+          resolvePublicBase(req, this.env),
+          id,
+          exp,
+          sig,
+        )
         const title = cleanText(input.title, 200) || `Ticket #${payload.channel.name}`
 
         const record: TranscriptRecord = {

@@ -28,6 +28,11 @@
 - [ ] PM2 start/stop/logs + arrêt propre (SIGINT/SIGTERM)
 - [ ] README : toutes les routes et variables à jour
 
+## En cours — Liens publics
+- [x] `resolvePublicBase()` : URL absolue depuis `PUBLIC_URL` ou la requête (`Host`, `X-Forwarded-Proto`) | commit local non poussé [2026-10-24 12:00]
+- [x] Route `/bot0000/{guildId}/{channelId}.html` → 302 vers le dernier transcript signé du salon
+- [ ] Test réel via proxy HTTPS (`TRUST_PROXY=true`) pour vérifier l'origine des liens
+
 ## Déploiement / GitHub
 - [ ] Créer le dépôt `ZenodeCie/Transcript` (le remote est déjà configuré, il renvoie `Repository not found`)
 - [ ] Push initial de `main` quand les identifiants GitHub sont disponibles

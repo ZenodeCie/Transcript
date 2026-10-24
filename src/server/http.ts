@@ -9,6 +9,29 @@ export interface ParsedRequest {
   searchParams: URLSearchParams
 }
 
+/**
+ * Base URL used to build absolute links: PUBLIC_URL when configured, otherwise
+ * derived from the incoming request (Host + X-Forwarded-Proto when trusted).
+ */
+export function resolvePublicBase(
+  req: IncomingMessage,
+  config: { publicUrl: string | null; trustProxy: boolean },
+): string | null {
+  if (config.publicUrl) return config.publicUrl.replace(/\/$/, "")
+  const host = req.headers.host
+  if (!host) return null
+  let proto = "http"
+  if (config.trustProxy) {
+    const forwarded = req.headers["x-forwarded-proto"]
+    if (typeof forwarded === "string" && forwarded.trim()) {
+      proto = forwarded.split(",")[0]!.trim()
+    }
+  } else if ((req.socket as { encrypted?: boolean }).encrypted) {
+    proto = "https"
+  }
+  return `${proto}://${host}`
+}
+
 export function parseRequest(req: IncomingMessage): ParsedRequest {
   const host = req.headers.host ?? "localhost"
   const url = new URL(req.url ?? "/", `http://${host}`)

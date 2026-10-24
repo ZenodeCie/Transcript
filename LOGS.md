@@ -1,8 +1,0 @@
-# LOGS — Zenode Transcript
-
-## 2026-10-24
-- [OPENCODE] **URLs absolues + route bot** : `resolvePublicBase()` (`server/http.ts`) construit l'URL publique depuis `PUBLIC_URL` sinon `Host` (+ `X-Forwarded-Proto` si `TRUST_PROXY=true`) ; utilisée par `POST /v1/transcripts` et `GET /bot0000/{guildId}/{channelId}.html` (redirection 302 vers le dernier transcript signé du salon). Corrige le bouton Discord invalide quand le service renvoyait `/t/...` (chemin relatif). `npm run build` OK | commit local non poussé [2026-10-24 12:00]
-
-## 2026-10-23
-- [OPENCODE] Initialisation du dépôt local `../transcript` : remote `https://github.com/ZenodeCie/Transcript.git`, branche `main`, scaffold TypeScript strict (ESM NodeNext), conventions reprises de `AGENTS.md` du projet bot. Le dépôt distant n'est pas encore accessible (aucun identifiant GitHub disponible) : commits locaux uniquement.
-- [OPENCODE] Socle complet du service web de transcript : types/guards, env validé, logger avec redaction, rendu HTML self-contained type Discord (markdown, mentions, embeds, composants V1/V2, réponses, réactions, polls, forwards, stickers, pièces jointes), stockage JSON atomique 0600 + purge TTL, liens signés HMAC temps constant, client REST Discord avec pagination/429, normalisation complète des messages bruts, inliner d'assets avec allowlist CDN et plafonds, serveur HTTP avec auth API key, rate limit, CORS, health, routes CRUD + page signée, CLI pour fetch JSON/Discord. Build OK. Commits locaux sur main : c9956b2, d493d88, ef21314, 75d5178, bdae20d, 0a9d21a, 2c0341c (v0.1.7). Push en attente d'identifiants GitHub pour `ZenodeCie/Transcript`.
